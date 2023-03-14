@@ -4,9 +4,9 @@ const fs = require('fs');
 const app = express();
 app.use(express.json());
 
-const json = 'src/talker.json';
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
+const json = 'src/talker.json';
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {
@@ -16,6 +16,14 @@ app.get('/', (_request, response) => {
 app.get('/talker', async (_req, res) => {
   const data = JSON.parse(fs.readFileSync(json, 'utf8'));
   res.status(200).json(data);
+});
+
+app.get('/talker/:id', async (req, res) => {
+  const data = JSON.parse(fs.readFileSync(json, 'utf8'));
+  const talker = data.find((param) => param.id === Number(req.params.id));
+
+  if (talker) return res.status(200).json(talker);
+  return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
 });
 
 app.listen(PORT, () => {
