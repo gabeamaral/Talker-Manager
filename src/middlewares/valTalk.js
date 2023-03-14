@@ -16,7 +16,9 @@ function rateValidation(req, res) {
     return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
   }
   if (!(numbers.includes(talk.rate))) {
-    return res.status(400).json({ message: 'O campo "rate" deve ser um número inteiro entre 1 e 5' });
+    return res.status(400).json({ 
+      message: 'O campo "rate" deve ser um número inteiro entre 1 e 5' 
+    });
   }
 }
 
