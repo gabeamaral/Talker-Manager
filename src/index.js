@@ -5,6 +5,10 @@ const login = require('./middlewares/login');
 
 const app = express();
 app.use(express.json());
+const { authenticationValidation } = require('./middlewares/valAuth');
+const { nameValidation } = require('./middlewares/valName');
+const { ageValidation } = require('./middlewares/valAge');
+const { talkValidation } = require('./middlewares/valTalk');
 
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
@@ -33,6 +37,16 @@ app.post('/login', login.loginValidation, (_req, res) => {
   res.status(200).json({ token: tokensCreation() });
 });
 
+app.post('/talker',
+  authenticationValidation, nameValidation, ageValidation, talkValidation,
+  (req, res) => {
+    const { name, age, talk } = req.body;
+    const data = JSON.parse(fs.readFileSync(json));
+    const addTalker = { id: data.length + 1, name, age, talk };
+    data.push(addTalker);
+    fs.writeFileSync(json, JSON.stringify(data));
+    res.status(201).json(addTalker);
+  });
 
 app.listen(PORT, () => {
   console.log('Online');
