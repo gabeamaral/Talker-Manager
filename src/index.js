@@ -48,6 +48,7 @@ app.post('/talker',
     res.status(201).json(addTalker);
   });
 
+  //ok
 app.delete('/talker/:id',
   authenticationValidation,
   (req, res) => {
