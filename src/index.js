@@ -8,7 +8,7 @@ app.use(express.json());
 const { authenticationValidation } = require('./middlewares/valAuth');
 const { nameValidation } = require('./middlewares/valName');
 const { ageValidation } = require('./middlewares/valAge');
-const { talkValidation, noTalker } = require('./middlewares/valTalk');
+const { talkValidation } = require('./middlewares/valTalk');
 
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
@@ -46,6 +46,16 @@ app.post('/talker',
     data.push(addTalker);
     fs.writeFileSync(json, JSON.stringify(data));
     res.status(201).json(addTalker);
+  });
+
+app.delete('/talker/:id',
+  authenticationValidation,
+  (req, res) => {
+    const id = Number(req.params.id);
+    const data = JSON.parse(fs.readFileSync(json));
+    const array = data.filter((e) => e.id !== id);
+    fs.writeFileSync(json, JSON.stringify(array));
+    res.status(204).json();
   });
 
 app.put('/talker/:id',
