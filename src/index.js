@@ -8,7 +8,7 @@ app.use(express.json());
 const { authenticationValidation } = require('./middlewares/valAuth');
 const { nameValidation } = require('./middlewares/valName');
 const { ageValidation } = require('./middlewares/valAge');
-const { talkValidation } = require('./middlewares/valTalk');
+const { talkValidation, noTalker } = require('./middlewares/valTalk');
 
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
@@ -46,6 +46,22 @@ app.post('/talker',
     data.push(addTalker);
     fs.writeFileSync(json, JSON.stringify(data));
     res.status(201).json(addTalker);
+  });
+
+app.put('/talker/:id',
+  authenticationValidation,
+  nameValidation, ageValidation, talkValidation,
+  (req, res) => {
+    const id = Number(req.params.id);
+    const data = JSON.parse(fs.readFileSync(json));
+    const talker = data.find((param) => param.id === Number(req.params.id));
+    if (!talker) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+    data.filter((e) => e.id !== id);
+    const update = { id, ...req.body };
+    data.push(update);
+    fs.writeFileSync(json, JSON.stringify(data));
+    console.log(data);
+    res.status(200).json(update);
   });
 
 app.listen(PORT, () => {
